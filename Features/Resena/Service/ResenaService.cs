@@ -2,6 +2,7 @@ using APIVideoJuegos.Features.Resena.DTOs;
 using APIVideoJuegos.Features.Resena.Repository;
 
 namespace APIVideoJuegos.Features.Resena.Service;
+
 public class ResenaService(IResenaRepository repository) : IResenaService
 {
     public async Task<IEnumerable<ResenaResponseDto>> GetByJuegoAsync(int idJuego)

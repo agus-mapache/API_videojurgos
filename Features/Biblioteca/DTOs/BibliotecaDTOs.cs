@@ -1,4 +1,4 @@
-namespace APIVideoJuegos.Features.Bibloteca.DTOs;
+namespace APIVideoJuegos.Features.Biblioteca.DTOs;
 
 public record AddJuegoBibliotecaDto(
     int IdUsuario, 

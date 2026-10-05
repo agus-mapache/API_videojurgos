@@ -1,7 +1,7 @@
-using APIVideoJuegos.Features.Bibloteca.DTOs;
-using APIVideoJuegos.Features.Bibloteca.Repository;
+using APIVideoJuegos.Features.Biblioteca.DTOs;
+using APIVideoJuegos.Features.Biblioteca.Repository;
 
-namespace APIVideoJuegos.Features.Bibloteca.Service;
+namespace APIVideoJuegos.Features.Biblioteca.Service;
 
 public class BibliotecaService(IBibliotecaRepository repository) : IBibliotecaService
 {

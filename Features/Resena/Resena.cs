@@ -1,4 +1,5 @@
 namespace APIVideoJuegos.Features.Resena;
+
 public class Resena
 {
     public int IdResena { get; set; }

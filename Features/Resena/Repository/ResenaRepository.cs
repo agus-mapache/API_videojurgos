@@ -1,5 +1,6 @@
 using System.Data;
 using Dapper;
+
 namespace APIVideoJuegos.Features.Resena.Repository;
 
 public class ResenaRepository(IDbConnection connection) : IResenaRepository

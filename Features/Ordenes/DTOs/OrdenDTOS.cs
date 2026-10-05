@@ -1,4 +1,5 @@
 namespace APIVideoJuegos.Features.Ordenes.DTOs;
+
 public record CreateDetalleOrdenDto(
     int IdJuego, 
     decimal PrecioComprado
@@ -8,6 +9,10 @@ public record CreateOrdenDto(
     int IdUsuario, 
     string? MetodoPago,
     List<CreateDetalleOrdenDto> Detalles
+);
+
+public record UpdateEstadoOrdenDto(
+    string Estado
 );
 
 public record DetalleOrdenResponseDto(

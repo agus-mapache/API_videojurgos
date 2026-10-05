@@ -1,7 +1,7 @@
 using System.Data;
 using Dapper;
 
-namespace APIVideoJuegos.Features.Bibloteca.Repository;
+namespace APIVideoJuegos.Features.Biblioteca.Repository;
 
 public class BibliotecaRepository(IDbConnection connection) : IBibliotecaRepository
 {
@@ -19,9 +19,8 @@ public class BibliotecaRepository(IDbConnection connection) : IBibliotecaReposit
 
     public async Task<bool> AddAsync(BibliotecaItem item)
     {
-        // INSERT IGNORE previene errores si el usuario ya posee el juego
         const string sql = """
-            INSERT IGNORE INTO biblioteca (id_usuario, id_juego, horas_jugadas) 
+            INSERT INTO biblioteca (id_usuario, id_juego, horas_jugadas) 
             VALUES (@IdUsuario, @IdJuego, @HorasJugadas)
             """;
         var rows = await connection.ExecuteAsync(sql, item);

@@ -15,22 +15,24 @@ using APIVideoJuegos.Features.Generos.Endpoints;
 using APIVideoJuegos.Features.Ordenes.Endpoints;
 using APIVideoJuegos.Features.Ordenes.Repository;
 using APIVideoJuegos.Features.Ordenes.Service;
-using APIVideoJuegos.Features.Bibloteca.Endpoints;
-using APIVideoJuegos.Features.Bibloteca.Service;
-using APIVideoJuegos.Features.Bibloteca.Repository;
+using APIVideoJuegos.Features.Biblioteca.Endpoints;
+using APIVideoJuegos.Features.Biblioteca.Service;
+using APIVideoJuegos.Features.Biblioteca.Repository;
 using APIVideoJuegos.Features.Resena.Endpoints;
 using APIVideoJuegos.Features.Resena.Service;
 using APIVideoJuegos.Features.Resena.Repository;
 
-var builder = WebApplication.CreateBuilder(args);
+using Dapper;
 
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddTransient<IDbConnection>(_ => new MySqlConnection(connectionString));
-
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();

@@ -1,6 +1,6 @@
-using APIVideoJuegos.Features.Bibloteca.DTOs;
+using APIVideoJuegos.Features.Biblioteca.DTOs;
 
-namespace APIVideoJuegos.Features.Bibloteca.Service;
+namespace APIVideoJuegos.Features.Biblioteca.Service;
 
 public interface IBibliotecaService
 {

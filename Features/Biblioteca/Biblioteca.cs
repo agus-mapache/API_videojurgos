@@ -1,4 +1,4 @@
-namespace APIVideoJuegos.Features.Bibloteca;
+namespace APIVideoJuegos.Features.Biblioteca;
 
 public class BibliotecaItem
 {

@@ -1,4 +1,4 @@
-namespace APIVideoJuegos.Features.Bibloteca.Repository;
+namespace APIVideoJuegos.Features.Biblioteca.Repository;
 
 public interface IBibliotecaRepository
 {
