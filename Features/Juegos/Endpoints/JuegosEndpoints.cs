@@ -10,17 +10,13 @@ public static class JuegoEndpoints
     {
         var group = app.MapGroup("/api/juegos")
                        .WithTags("Juegos");
-
-        // METHOD: GET
-        // ROUTE: /api/juegos
+                       
         group.MapGet("/", async (IJuegoService service) =>
         {
             var juegos = await service.GetAllAsync();
             return Results.Ok(juegos);
         });
 
-        // METHOD: GET
-        // ROUTE: /api/juegos/{id}
         group.MapGet("/{id:int}", async (int id, IJuegoService service) =>
         {
             var juego = await service.GetByIdAsync(id);
@@ -29,8 +25,6 @@ public static class JuegoEndpoints
                 : Results.NotFound(new { mensaje = $"Juego con ID {id} no encontrado." });
         });
 
-        // METHOD: GET
-        // ROUTE: /api/juegos/slug/{slug}
         group.MapGet("/slug/{slug}", async (string slug, IJuegoService service) =>
         {
             var juego = await service.GetBySlugAsync(slug);
@@ -39,8 +33,6 @@ public static class JuegoEndpoints
                 : Results.NotFound(new { mensaje = $"Juego con slug '{slug}' no encontrado." });
         });
 
-        // METHOD: POST
-        // ROUTE: /api/juegos
         group.MapPost("/", async (CreateJuegoDto dto, IJuegoService service) =>
         {
             try
@@ -64,18 +56,16 @@ public static class JuegoEndpoints
                 }
                 if (ex.Number == 1452)
                 {
-                    return Results.BadRequest(new { error = "El desarrollador o editor especificado no existe.", detalle = ex.Message });
+                    return Results.UnprocessableEntity(new { error = "El desarrollador o editor especificado no existe.", detalle = ex.Message });
                 }
                 return Results.BadRequest(new { error = "Error en la base de datos al registrar el juego.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: PUT
-        // ROUTE: /api/juegos/{id}
         group.MapPut("/{id:int}", async (int id, UpdateJuegoDto dto, IJuegoService service) =>
         {
             try
@@ -97,18 +87,16 @@ public static class JuegoEndpoints
                 }
                 if (ex.Number == 1452)
                 {
-                    return Results.BadRequest(new { error = "El desarrollador o editor especificado no existe.", detalle = ex.Message });
+                    return Results.UnprocessableEntity(new { error = "El desarrollador o editor especificado no existe.", detalle = ex.Message });
                 }
                 return Results.BadRequest(new { error = "Error en la base de datos al actualizar el juego.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: DELETE
-        // ROUTE: /api/juegos/{id}
         group.MapDelete("/{id:int}", async (int id, IJuegoService service) =>
         {
             try
@@ -122,10 +110,10 @@ public static class JuegoEndpoints
             {
                 return Results.BadRequest(new { error = "No se puede eliminar el juego debido a dependencias activas.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization(); 
     }
 }

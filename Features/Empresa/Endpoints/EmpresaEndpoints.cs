@@ -10,17 +10,13 @@ public static class EmpresaEndpoints
     {
         var group = app.MapGroup("/api/empresas")
                        .WithTags("Empresas");
-
-        // METHOD: GET
-        // ROUTE: /api/empresas
+                       
         group.MapGet("/", async (IEmpresaService service) =>
         {
             var empresas = await service.GetAllAsync();
             return Results.Ok(empresas);
         });
 
-        // METHOD: GET
-        // ROUTE: /api/empresas/{id}
         group.MapGet("/{id:int}", async (int id, IEmpresaService service) =>
         {
             var empresa = await service.GetByIdAsync(id);
@@ -29,8 +25,6 @@ public static class EmpresaEndpoints
                 : Results.NotFound(new { mensaje = $"Empresa con ID {id} no encontrada." });
         });
 
-        // METHOD: POST
-        // ROUTE: /api/empresas
         group.MapPost("/", async (CreateEmpresaDto dto, IEmpresaService service) =>
         {
             try
@@ -46,14 +40,12 @@ public static class EmpresaEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al crear la empresa.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: PUT
-        // ROUTE: /api/empresas/{id}
         group.MapPut("/{id:int}", async (int id, UpdateEmpresaDto dto, IEmpresaService service) =>
         {
             try
@@ -67,14 +59,12 @@ public static class EmpresaEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al actualizar la empresa.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: DELETE
-        // ROUTE: /api/empresas/{id}
         group.MapDelete("/{id:int}", async (int id, IEmpresaService service) =>
         {
             try
@@ -86,12 +76,16 @@ public static class EmpresaEndpoints
             }
             catch (MySqlException ex)
             {
+                if (ex.Number == 1451)
+                {
+                    return Results.Conflict(new { error = "No se puede eliminar la empresa porque tiene juegos asociados.", detalle = ex.Message });
+                }
                 return Results.BadRequest(new { error = "No se puede eliminar la empresa debido a relaciones activas en la base de datos.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization(); 
     }
 }

@@ -11,16 +11,12 @@ public static class OrdenEndpoints
         var group = app.MapGroup("/api/ordenes")
                        .WithTags("Ordenes");
 
-        // METHOD: GET
-        // ROUTE: /api/ordenes
         group.MapGet("/", async (IOrdenService service) =>
         {
             var ordenes = await service.GetAllAsync();
             return Results.Ok(ordenes);
         });
 
-        // METHOD: GET
-        // ROUTE: /api/ordenes/{id}
         group.MapGet("/{id:int}", async (int id, IOrdenService service) =>
         {
             var orden = await service.GetByIdAsync(id);
@@ -29,16 +25,12 @@ public static class OrdenEndpoints
                 : Results.NotFound(new { mensaje = $"Orden con ID {id} no encontrada." });
         });
 
-        // METHOD: GET
-        // ROUTE: /api/ordenes/usuario/{idUsuario}
         group.MapGet("/usuario/{idUsuario:int}", async (int idUsuario, IOrdenService service) =>
         {
             var ordenes = await service.GetByUsuarioAsync(idUsuario);
             return Results.Ok(ordenes);
         });
 
-        // METHOD: POST
-        // ROUTE: /api/ordenes
         group.MapPost("/", async (CreateOrdenDto dto, IOrdenService service) =>
         {
             try
@@ -54,18 +46,16 @@ public static class OrdenEndpoints
             {
                 if (ex.Number == 1452)
                 {
-                    return Results.BadRequest(new { error = "El usuario o uno de los juegos especificados en la orden no existe.", detalle = ex.Message });
+                    return Results.UnprocessableEntity(new { error = "El usuario o uno de los juegos especificados en la orden no existe.", detalle = ex.Message });
                 }
                 return Results.BadRequest(new { error = "Error en la base de datos al crear la orden.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: PATCH
-        // ROUTE: /api/ordenes/{id}/estado
         group.MapPatch("/{id:int}/estado", async (int id, UpdateEstadoOrdenDto dto, IOrdenService service) =>
         {
             try
@@ -79,14 +69,12 @@ public static class OrdenEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al actualizar el estado de la orden.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: DELETE
-        // ROUTE: /api/ordenes/{id}
         group.MapDelete("/{id:int}", async (int id, IOrdenService service) =>
         {
             try
@@ -100,10 +88,10 @@ public static class OrdenEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al eliminar la orden.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
     }
 }

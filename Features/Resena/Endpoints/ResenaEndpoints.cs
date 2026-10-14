@@ -11,8 +11,6 @@ public static class ResenaEndpoints
         var group = app.MapGroup("/api/resenas")
                        .WithTags("Resenas");
 
-        // METHOD: GET
-        // ROUTE: /api/resenas/{id}
         group.MapGet("/{id:int}", async (int id, IResenaService service) =>
         {
             var resena = await service.GetByIdAsync(id);
@@ -21,24 +19,18 @@ public static class ResenaEndpoints
                 : Results.NotFound(new { mensaje = $"Reseña con ID {id} no encontrada." });
         });
 
-        // METHOD: GET
-        // ROUTE: /api/resenas/juego/{idJuego}
         group.MapGet("/juego/{idJuego:int}", async (int idJuego, IResenaService service) =>
         {
             var resenas = await service.GetByJuegoAsync(idJuego);
             return Results.Ok(resenas);
         });
 
-        // METHOD: GET
-        // ROUTE: /api/resenas/usuario/{idUsuario}
         group.MapGet("/usuario/{idUsuario:int}", async (int idUsuario, IResenaService service) =>
         {
             var resenas = await service.GetByUsuarioAsync(idUsuario);
             return Results.Ok(resenas);
         });
 
-        // METHOD: POST
-        // ROUTE: /api/resenas
         group.MapPost("/", async (CreateResenaDto dto, IResenaService service) =>
         {
             try
@@ -54,18 +46,16 @@ public static class ResenaEndpoints
             {
                 if (ex.Number == 1452)
                 {
-                    return Results.BadRequest(new { error = "El usuario o el juego especificado no existe.", detalle = ex.Message });
+                    return Results.UnprocessableEntity(new { error = "El usuario o el juego especificado no existe.", detalle = ex.Message });
                 }
                 return Results.BadRequest(new { error = "Error en la base de datos al crear la reseña.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: PUT
-        // ROUTE: /api/resenas/{id}
         group.MapPut("/{id:int}", async (int id, UpdateResenaDto dto, IResenaService service) =>
         {
             try
@@ -79,14 +69,12 @@ public static class ResenaEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al actualizar la reseña.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: DELETE
-        // ROUTE: /api/resenas/{id}
         group.MapDelete("/{id:int}", async (int id, IResenaService service) =>
         {
             try
@@ -100,10 +88,10 @@ public static class ResenaEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al eliminar la reseña.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
     }
 }

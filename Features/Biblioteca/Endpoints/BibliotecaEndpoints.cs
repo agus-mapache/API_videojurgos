@@ -10,17 +10,13 @@ public static class BibliotecaEndpoints
     {
         var group = app.MapGroup("/api/biblioteca")
                        .WithTags("Biblioteca");
-
-        // METHOD: GET
-        // ROUTE: /api/biblioteca/usuario/{idUsuario}
+        
         group.MapGet("/usuario/{idUsuario:int}", async (int idUsuario, IBibliotecaService service) =>
         {
             var biblioteca = await service.GetByUsuarioAsync(idUsuario);
             return Results.Ok(biblioteca);
         });
 
-        // METHOD: GET
-        // ROUTE: /api/biblioteca/usuario/{idUsuario}/juego/{idJuego}
         group.MapGet("/usuario/{idUsuario:int}/juego/{idJuego:int}", async (int idUsuario, int idJuego, IBibliotecaService service) =>
         {
             var item = await service.GetJuegoEnBibliotecaAsync(idUsuario, idJuego);
@@ -29,8 +25,6 @@ public static class BibliotecaEndpoints
                 : Results.NotFound(new { mensaje = $"El usuario {idUsuario} no posee el juego {idJuego} en su biblioteca." });
         });
 
-        // METHOD: POST
-        // ROUTE: /api/biblioteca
         group.MapPost("/", async (AddJuegoBibliotecaDto dto, IBibliotecaService service) =>
         {
             try
@@ -44,18 +38,16 @@ public static class BibliotecaEndpoints
             {
                 if (ex.Number == 1452)
                 {
-                    return Results.BadRequest(new { error = "El usuario o el juego especificado no existe.", detalle = ex.Message });
+                    return Results.UnprocessableEntity(new { error = "El usuario o el juego especificado no existe.", detalle = ex.Message });
                 }
                 return Results.BadRequest(new { error = "Error en la base de datos al agregar el juego a la biblioteca.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: PATCH
-        // ROUTE: /api/biblioteca/usuario/{idUsuario}/juego/{idJuego}/horas
         group.MapPatch("/usuario/{idUsuario:int}/juego/{idJuego:int}/horas", async (int idUsuario, int idJuego, UpdateHorasDto dto, IBibliotecaService service) =>
         {
             try
@@ -69,14 +61,12 @@ public static class BibliotecaEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al actualizar las horas jugadas.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: DELETE
-        // ROUTE: /api/biblioteca/usuario/{idUsuario}/juego/{idJuego}
         group.MapDelete("/usuario/{idUsuario:int}/juego/{idJuego:int}", async (int idUsuario, int idJuego, IBibliotecaService service) =>
         {
             try
@@ -90,10 +80,10 @@ public static class BibliotecaEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al remover el juego de la biblioteca.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
     }
 }

@@ -11,16 +11,12 @@ public static class UsuarioEndpoints
         var group = app.MapGroup("/api/usuarios")
                        .WithTags("Usuarios");
 
-        // METHOD: GET
-        // ROUTE: /api/usuarios
         group.MapGet("/", async (IUsuarioService service) =>
         {
             var usuarios = await service.GetAllAsync();
             return Results.Ok(usuarios);
         });
 
-        // METHOD: GET
-        // ROUTE: /api/usuarios/{id}
         group.MapGet("/{id:int}", async (int id, IUsuarioService service) =>
         {
             var usuario = await service.GetByIdAsync(id);
@@ -29,8 +25,6 @@ public static class UsuarioEndpoints
                 : Results.NotFound(new { mensaje = $"Usuario con ID {id} no encontrado." });
         });
 
-        // METHOD: POST
-        // ROUTE: /api/usuarios
         group.MapPost("/", async (CreateUsuarioDto dto, IUsuarioService service) =>
         {
             try
@@ -44,24 +38,22 @@ public static class UsuarioEndpoints
             }
             catch (MySqlException ex)
             {
-                if (ex.Number == 1062) // Duplicate entry
+                if (ex.Number == 1062)
                 {
                     return Results.Conflict(new { error = "El nombre de usuario o email ya se encuentra registrado.", detalle = ex.Message });
                 }
-                if (ex.Number == 1452) // Foreign key fails (id_empresa)
+                if (ex.Number == 1452) 
                 {
-                    return Results.BadRequest(new { error = $"La empresa con ID {dto.IdEmpresa} no existe.", detalle = ex.Message });
+                    return Results.UnprocessableEntity(new { error = $"La empresa con ID {dto.IdEmpresa} no existe.", detalle = ex.Message });
                 }
                 return Results.BadRequest(new { error = "Error en la base de datos al registrar el usuario.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }); 
 
-        // METHOD: PUT
-        // ROUTE: /api/usuarios/{id}
         group.MapPut("/{id:int}", async (int id, UpdateUsuarioDto dto, IUsuarioService service) =>
         {
             try
@@ -79,18 +71,16 @@ public static class UsuarioEndpoints
                 }
                 if (ex.Number == 1452)
                 {
-                    return Results.BadRequest(new { error = $"La empresa con ID {dto.IdEmpresa} no existe.", detalle = ex.Message });
+                    return Results.UnprocessableEntity(new { error = $"La empresa con ID {dto.IdEmpresa} no existe.", detalle = ex.Message });
                 }
                 return Results.BadRequest(new { error = "Error en la base de datos al actualizar el usuario.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: DELETE
-        // ROUTE: /api/usuarios/{id}
         group.MapDelete("/{id:int}", async (int id, IUsuarioService service) =>
         {
             try
@@ -104,10 +94,10 @@ public static class UsuarioEndpoints
             {
                 return Results.BadRequest(new { error = "No se puede eliminar el usuario debido a registros asociados (órdenes o biblioteca).", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
     }
 }

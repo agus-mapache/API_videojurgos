@@ -11,16 +11,12 @@ public static class GeneroEndpoints
         var group = app.MapGroup("/api/generos")
                        .WithTags("Generos");
 
-        // METHOD: GET
-        // ROUTE: /api/generos
         group.MapGet("/", async (IGeneroService service) =>
         {
             var generos = await service.GetAllAsync();
             return Results.Ok(generos);
         });
 
-        // METHOD: GET
-        // ROUTE: /api/generos/{id}
         group.MapGet("/{id:int}", async (int id, IGeneroService service) =>
         {
             var res = await service.GetByIdAsync(id);
@@ -29,8 +25,12 @@ public static class GeneroEndpoints
                 : Results.NotFound(new { mensaje = $"Género con ID {id} no encontrado." });
         });
 
-        // METHOD: POST
-        // ROUTE: /api/generos
+        group.MapGet("/juego/{idJuego:int}", async (int idJuego, IGeneroService service) =>
+        {
+            var generos = await service.GetGenerosByJuegoAsync(idJuego);
+            return Results.Ok(generos);
+        });
+
         group.MapPost("/", async (CreateGeneroDto dto, IGeneroService service) =>
         {
             try
@@ -54,14 +54,12 @@ public static class GeneroEndpoints
                 }
                 return Results.BadRequest(new { error = "Error en la base de datos al crear el género.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: PUT
-        // ROUTE: /api/generos/{id}
         group.MapPut("/{id:int}", async (int id, UpdateGeneroDto dto, IGeneroService service) =>
         {
             try
@@ -79,14 +77,12 @@ public static class GeneroEndpoints
                 }
                 return Results.BadRequest(new { error = "Error en la base de datos al actualizar el género.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: DELETE
-        // ROUTE: /api/generos/{id}
         group.MapDelete("/{id:int}", async (int id, IGeneroService service) =>
         {
             try
@@ -100,22 +96,12 @@ public static class GeneroEndpoints
             {
                 return Results.BadRequest(new { error = "No se puede eliminar el género debido a asociaciones existentes.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: GET
-        // ROUTE: /api/generos/juego/{idJuego}
-        group.MapGet("/juego/{idJuego:int}", async (int idJuego, IGeneroService service) =>
-        {
-            var generos = await service.GetGenerosByJuegoAsync(idJuego);
-            return Results.Ok(generos);
-        });
-
-        // METHOD: POST
-        // ROUTE: /api/generos/juego/asociar
         group.MapPost("/juego/asociar", async (AsignarGeneroJuegoDto dto, IGeneroService service) =>
         {
             try
@@ -129,14 +115,12 @@ public static class GeneroEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al asociar el género con el juego.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
 
-        // METHOD: DELETE
-        // ROUTE: /api/generos/juego/{idJuego}/genero/{idGenero}
         group.MapDelete("/juego/{idJuego:int}/genero/{idGenero:int}", async (int idJuego, int idGenero, IGeneroService service) =>
         {
             try
@@ -150,10 +134,10 @@ public static class GeneroEndpoints
             {
                 return Results.BadRequest(new { error = "Error en la base de datos al desasociar el género.", detalle = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Results.BadRequest(new { error = ex.Message });
+                return Results.StatusCode(500);
             }
-        });
+        }).RequireAuthorization();
     }
 }
