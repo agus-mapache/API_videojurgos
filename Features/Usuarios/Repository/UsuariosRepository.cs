@@ -7,7 +7,7 @@ public class UsuarioRepository(IDbConnection connection) : IUsuarioRepository
 {
     public async Task<IEnumerable<Usuario>> GetAllAsync()
     {
-        const string sql = "SELECT id_usuario AS IdUsuario, nombre_usuario AS NombreUsuario, email, password_hash AS PasswordHash, Fecha_Registro AS FechaRegistro, tipo_usuario AS TipoUsuario, id_empresa AS IdEmpresa FROM usuarios";
+        const string sql = "SELECT id_usuario AS IdUsuario, nombre_usuario AS NombreUsuario, email, password_hash AS PasswordHash, fecha_registro AS FechaRegistro, tipo_usuario AS TipoUsuario, id_empresa AS IdEmpresa, saldo_billetera AS SaldoBilletera FROM usuarios";
         return await connection.QueryAsync<Usuario>(sql);
     }
 
@@ -16,10 +16,21 @@ public class UsuarioRepository(IDbConnection connection) : IUsuarioRepository
         const string sql = """
             SELECT id_usuario AS IdUsuario, nombre_usuario AS NombreUsuario, email, 
                    password_hash AS PasswordHash, fecha_registro AS FechaRegistro, 
-                   tipo_usuario AS TipoUsuario, id_empresa AS IdEmpresa 
+                   tipo_usuario AS TipoUsuario, id_empresa AS IdEmpresa, saldo_billetera AS SaldoBilletera 
             FROM usuarios WHERE id_usuario = @Id
             """;
         return await connection.QuerySingleOrDefaultAsync<Usuario>(sql, new { Id = id });
+    }
+
+    public async Task<Usuario?> GetByEmailAsync(string email)
+    {
+        const string sql = """
+            SELECT id_usuario AS IdUsuario, nombre_usuario AS NombreUsuario, email, 
+                   password_hash AS PasswordHash, fecha_registro AS FechaRegistro, 
+                   tipo_usuario AS TipoUsuario, id_empresa AS IdEmpresa, saldo_billetera AS SaldoBilletera 
+            FROM usuarios WHERE email = @Email
+            """;
+        return await connection.QuerySingleOrDefaultAsync<Usuario>(sql, new { Email = email });
     }
 
     public async Task<int> CreateAsync(Usuario usuario)

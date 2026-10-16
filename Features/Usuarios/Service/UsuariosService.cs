@@ -23,7 +23,7 @@ public class UsuarioService(IUsuarioRepository repository) : IUsuarioService
         {
             NombreUsuario = dto.NombreUsuario,
             Email = dto.Email,
-            PasswordHash = dto.Password,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             TipoUsuario = string.IsNullOrWhiteSpace(dto.TipoUsuario) ? "Cliente" : dto.TipoUsuario,
             IdEmpresa = dto.IdEmpresa
         };

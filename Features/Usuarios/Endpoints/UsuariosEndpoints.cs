@@ -11,12 +11,16 @@ public static class UsuarioEndpoints
         var group = app.MapGroup("/api/usuarios")
                        .WithTags("Usuarios");
 
+        // METHOD: GET
+        // ROUTE: /api/usuarios
         group.MapGet("/", async (IUsuarioService service) =>
         {
             var usuarios = await service.GetAllAsync();
             return Results.Ok(usuarios);
         });
 
+        // METHOD: GET
+        // ROUTE: /api/usuarios/{id}
         group.MapGet("/{id:int}", async (int id, IUsuarioService service) =>
         {
             var usuario = await service.GetByIdAsync(id);
@@ -25,6 +29,8 @@ public static class UsuarioEndpoints
                 : Results.NotFound(new { mensaje = $"Usuario con ID {id} no encontrado." });
         });
 
+        // METHOD: POST
+        // ROUTE: /api/usuarios
         group.MapPost("/", async (CreateUsuarioDto dto, IUsuarioService service) =>
         {
             try
@@ -54,6 +60,8 @@ public static class UsuarioEndpoints
             }
         }); 
 
+        // METHOD: PUT
+        // ROUTE: /api/usuarios/{id}
         group.MapPut("/{id:int}", async (int id, UpdateUsuarioDto dto, IUsuarioService service) =>
         {
             try
@@ -81,6 +89,8 @@ public static class UsuarioEndpoints
             }
         }).RequireAuthorization();
 
+        // METHOD: DELETE
+        // ROUTE: /api/usuarios/{id}
         group.MapDelete("/{id:int}", async (int id, IUsuarioService service) =>
         {
             try
@@ -98,6 +108,6 @@ public static class UsuarioEndpoints
             {
                 return Results.StatusCode(500);
             }
-        }).RequireAuthorization();
+        }).RequireAuthorization("AdminOnly");
     }
 }

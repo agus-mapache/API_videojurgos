@@ -11,6 +11,8 @@ public static class ResenaEndpoints
         var group = app.MapGroup("/api/resenas")
                        .WithTags("Resenas");
 
+        // METHOD: GET
+        // ROUTE: /api/resenas/{id}
         group.MapGet("/{id:int}", async (int id, IResenaService service) =>
         {
             var resena = await service.GetByIdAsync(id);
@@ -19,18 +21,24 @@ public static class ResenaEndpoints
                 : Results.NotFound(new { mensaje = $"Reseña con ID {id} no encontrada." });
         });
 
+        // METHOD: GET
+        // ROUTE: /api/resenas/juego/{idJuego}
         group.MapGet("/juego/{idJuego:int}", async (int idJuego, IResenaService service) =>
         {
             var resenas = await service.GetByJuegoAsync(idJuego);
             return Results.Ok(resenas);
         });
 
+        // METHOD: GET
+        // ROUTE: /api/resenas/usuario/{idUsuario}
         group.MapGet("/usuario/{idUsuario:int}", async (int idUsuario, IResenaService service) =>
         {
             var resenas = await service.GetByUsuarioAsync(idUsuario);
             return Results.Ok(resenas);
         });
 
+        // METHOD: POST
+        // ROUTE: /api/resenas
         group.MapPost("/", async (CreateResenaDto dto, IResenaService service) =>
         {
             try
@@ -56,6 +64,8 @@ public static class ResenaEndpoints
             }
         }).RequireAuthorization();
 
+        // METHOD: PUT
+        // ROUTE: /api/resenas/{id}
         group.MapPut("/{id:int}", async (int id, UpdateResenaDto dto, IResenaService service) =>
         {
             try
@@ -75,6 +85,8 @@ public static class ResenaEndpoints
             }
         }).RequireAuthorization();
 
+        // METHOD: DELETE
+        // ROUTE: /api/resenas/{id}
         group.MapDelete("/{id:int}", async (int id, IResenaService service) =>
         {
             try

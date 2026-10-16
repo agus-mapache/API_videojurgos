@@ -11,12 +11,16 @@ public static class JuegoEndpoints
         var group = app.MapGroup("/api/juegos")
                        .WithTags("Juegos");
                        
+        // METHOD: GET
+        // ROUTE: /api/juegos
         group.MapGet("/", async (IJuegoService service) =>
         {
             var juegos = await service.GetAllAsync();
             return Results.Ok(juegos);
         });
 
+        // METHOD: GET
+        // ROUTE: /api/juegos/{id}
         group.MapGet("/{id:int}", async (int id, IJuegoService service) =>
         {
             var juego = await service.GetByIdAsync(id);
@@ -25,6 +29,8 @@ public static class JuegoEndpoints
                 : Results.NotFound(new { mensaje = $"Juego con ID {id} no encontrado." });
         });
 
+        // METHOD: GET
+        // ROUTE: /api/juegos/slug/{slug}
         group.MapGet("/slug/{slug}", async (string slug, IJuegoService service) =>
         {
             var juego = await service.GetBySlugAsync(slug);
@@ -33,6 +39,8 @@ public static class JuegoEndpoints
                 : Results.NotFound(new { mensaje = $"Juego con slug '{slug}' no encontrado." });
         });
 
+        // METHOD: POST
+        // ROUTE: /api/juegos
         group.MapPost("/", async (CreateJuegoDto dto, IJuegoService service) =>
         {
             try
@@ -64,8 +72,10 @@ public static class JuegoEndpoints
             {
                 return Results.StatusCode(500);
             }
-        }).RequireAuthorization();
+        }).RequireAuthorization("DesarrolladorOrAdmin");
 
+        // METHOD: PUT
+        // ROUTE: /api/juegos/{id}
         group.MapPut("/{id:int}", async (int id, UpdateJuegoDto dto, IJuegoService service) =>
         {
             try
@@ -95,8 +105,10 @@ public static class JuegoEndpoints
             {
                 return Results.StatusCode(500);
             }
-        }).RequireAuthorization();
+        }).RequireAuthorization("DesarrolladorOrAdmin");
 
+        // METHOD: DELETE
+        // ROUTE: /api/juegos/{id}
         group.MapDelete("/{id:int}", async (int id, IJuegoService service) =>
         {
             try
@@ -114,6 +126,6 @@ public static class JuegoEndpoints
             {
                 return Results.StatusCode(500);
             }
-        }).RequireAuthorization(); 
+        }).RequireAuthorization("AdminOnly"); 
     }
 }

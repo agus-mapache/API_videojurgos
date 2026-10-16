@@ -1,6 +1,57 @@
-@APIVideoJuegos_HostAddress = http://localhost:5292
+@Host = http://localhost:5292
+@Token = Bearer YOUR_TOKEN_HERE
 
-GET {{APIVideoJuegos_HostAddress}}/weatherforecast/
+### 1. Iniciar sesión (Login)
+POST {{Host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "lucia@email.com",
+  "password": "password"
+}
+
+### 2. Obtener perfil del usuario autenticado
+GET {{Host}}/api/auth/me
+Authorization: {{Token}}
 Accept: application/json
 
-###
+### 3. Registrar nuevo usuario (con contraseña hasheada en BCrypt)
+POST {{Host}}/api/usuarios
+Content-Type: application/json
+
+{
+  "nombreUsuario": "nuevo_gamer",
+  "email": "nuevogamer@email.com",
+  "password": "MiPasswordSeguro123!",
+  "tipoUsuario": "Cliente"
+}
+
+### 4. Listar videojuegos (Público)
+GET {{Host}}/api/juegos
+Accept: application/json
+
+### 5. Crear videojuego (Requiere Desarrollador o Admin)
+POST {{Host}}/api/juegos
+Authorization: {{Token}}
+Content-Type: application/json
+
+{
+  "titulo": "Hades II",
+  "slug": "hades-ii",
+  "descripcion": "Juego rogue-like de acción divina.",
+  "precioBase": 29.99,
+  "descuentoPorcentaje": 10,
+  "fechaLanzamiento": "2024-05-06T00:00:00Z",
+  "idDesarrollador": 1,
+  "idEditor": 1
+}
+
+### 6. Crear empresa (Requiere AdminOnly)
+POST {{Host}}/api/empresas
+Authorization: {{Token}}
+Content-Type: application/json
+
+{
+  "nombre": "Supergiant Games",
+  "sitioWeb": "https://www.supergiantgames.com"
+}

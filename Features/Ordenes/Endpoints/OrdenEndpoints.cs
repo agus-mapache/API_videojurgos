@@ -11,26 +11,34 @@ public static class OrdenEndpoints
         var group = app.MapGroup("/api/ordenes")
                        .WithTags("Ordenes");
 
+        // METHOD: GET
+        // ROUTE: /api/ordenes
         group.MapGet("/", async (IOrdenService service) =>
         {
             var ordenes = await service.GetAllAsync();
             return Results.Ok(ordenes);
-        });
+        }).RequireAuthorization("AdminOnly");
 
+        // METHOD: GET
+        // ROUTE: /api/ordenes/{id}
         group.MapGet("/{id:int}", async (int id, IOrdenService service) =>
         {
             var orden = await service.GetByIdAsync(id);
             return orden is not null 
                 ? Results.Ok(orden) 
                 : Results.NotFound(new { mensaje = $"Orden con ID {id} no encontrada." });
-        });
+        }).RequireAuthorization();
 
+        // METHOD: GET
+        // ROUTE: /api/ordenes/usuario/{idUsuario}
         group.MapGet("/usuario/{idUsuario:int}", async (int idUsuario, IOrdenService service) =>
         {
             var ordenes = await service.GetByUsuarioAsync(idUsuario);
             return Results.Ok(ordenes);
-        });
+        }).RequireAuthorization();
 
+        // METHOD: POST
+        // ROUTE: /api/ordenes
         group.MapPost("/", async (CreateOrdenDto dto, IOrdenService service) =>
         {
             try
@@ -56,6 +64,8 @@ public static class OrdenEndpoints
             }
         }).RequireAuthorization();
 
+        // METHOD: PATCH
+        // ROUTE: /api/ordenes/{id}/estado
         group.MapPatch("/{id:int}/estado", async (int id, UpdateEstadoOrdenDto dto, IOrdenService service) =>
         {
             try
@@ -73,8 +83,10 @@ public static class OrdenEndpoints
             {
                 return Results.StatusCode(500);
             }
-        }).RequireAuthorization();
+        }).RequireAuthorization("AdminOnly");
 
+        // METHOD: DELETE
+        // ROUTE: /api/ordenes/{id}
         group.MapDelete("/{id:int}", async (int id, IOrdenService service) =>
         {
             try
@@ -92,6 +104,6 @@ public static class OrdenEndpoints
             {
                 return Results.StatusCode(500);
             }
-        }).RequireAuthorization();
+        }).RequireAuthorization("AdminOnly");
     }
 }

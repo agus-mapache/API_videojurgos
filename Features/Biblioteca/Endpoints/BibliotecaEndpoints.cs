@@ -11,12 +11,16 @@ public static class BibliotecaEndpoints
         var group = app.MapGroup("/api/biblioteca")
                        .WithTags("Biblioteca");
         
+        // METHOD: GET
+        // ROUTE: /api/biblioteca/usuario/{idUsuario}
         group.MapGet("/usuario/{idUsuario:int}", async (int idUsuario, IBibliotecaService service) =>
         {
             var biblioteca = await service.GetByUsuarioAsync(idUsuario);
             return Results.Ok(biblioteca);
         });
 
+        // METHOD: GET
+        // ROUTE: /api/biblioteca/usuario/{idUsuario}/juego/{idJuego}
         group.MapGet("/usuario/{idUsuario:int}/juego/{idJuego:int}", async (int idUsuario, int idJuego, IBibliotecaService service) =>
         {
             var item = await service.GetJuegoEnBibliotecaAsync(idUsuario, idJuego);
@@ -25,6 +29,8 @@ public static class BibliotecaEndpoints
                 : Results.NotFound(new { mensaje = $"El usuario {idUsuario} no posee el juego {idJuego} en su biblioteca." });
         });
 
+        // METHOD: POST
+        // ROUTE: /api/biblioteca
         group.MapPost("/", async (AddJuegoBibliotecaDto dto, IBibliotecaService service) =>
         {
             try
@@ -46,8 +52,10 @@ public static class BibliotecaEndpoints
             {
                 return Results.StatusCode(500);
             }
-        }).RequireAuthorization();
+        }).RequireAuthorization("AdminOnly");
 
+        // METHOD: PATCH
+        // ROUTE: /api/biblioteca/usuario/{idUsuario}/juego/{idJuego}/horas
         group.MapPatch("/usuario/{idUsuario:int}/juego/{idJuego:int}/horas", async (int idUsuario, int idJuego, UpdateHorasDto dto, IBibliotecaService service) =>
         {
             try
@@ -67,6 +75,8 @@ public static class BibliotecaEndpoints
             }
         }).RequireAuthorization();
 
+        // METHOD: DELETE
+        // ROUTE: /api/biblioteca/usuario/{idUsuario}/juego/{idJuego}
         group.MapDelete("/usuario/{idUsuario:int}/juego/{idJuego:int}", async (int idUsuario, int idJuego, IBibliotecaService service) =>
         {
             try
@@ -84,6 +94,6 @@ public static class BibliotecaEndpoints
             {
                 return Results.StatusCode(500);
             }
-        }).RequireAuthorization();
+        }).RequireAuthorization("AdminOnly");
     }
 }
