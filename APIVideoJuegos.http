@@ -1,7 +1,18 @@
 @Host = http://localhost:5292
 @Token = Bearer YOUR_TOKEN_HERE
 
-### 1. Iniciar sesión (Login)
+### 1. Registrar usuario / Sign Up
+POST {{Host}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "nombreUsuario": "nuevo_jugador",
+  "email": "jugador@email.com",
+  "password": "Password123!",
+  "tipoUsuario": "Cliente"
+}
+
+### 3. Iniciar sesión (Login)
 POST {{Host}}/api/auth/login
 Content-Type: application/json
 

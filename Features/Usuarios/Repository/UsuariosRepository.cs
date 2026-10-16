@@ -33,6 +33,17 @@ public class UsuarioRepository(IDbConnection connection) : IUsuarioRepository
         return await connection.QuerySingleOrDefaultAsync<Usuario>(sql, new { Email = email });
     }
 
+    public async Task<Usuario?> GetByNombreUsuarioAsync(string nombreUsuario)
+    {
+        const string sql = """
+            SELECT id_usuario AS IdUsuario, nombre_usuario AS NombreUsuario, email, 
+                   password_hash AS PasswordHash, fecha_registro AS FechaRegistro, 
+                   tipo_usuario AS TipoUsuario, id_empresa AS IdEmpresa, saldo_billetera AS SaldoBilletera 
+            FROM usuarios WHERE nombre_usuario = @NombreUsuario
+            """;
+        return await connection.QuerySingleOrDefaultAsync<Usuario>(sql, new { NombreUsuario = nombreUsuario });
+    }
+
     public async Task<int> CreateAsync(Usuario usuario)
     {
         const string sql = """
