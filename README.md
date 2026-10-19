@@ -45,22 +45,5 @@ Ejecuta el servidor en modo desarrollo:
    ```
 El servidor estará disponible en `http://localhost:3000`.
 ---
-🔌 Endpoints de la API
-Videojuegos
-Método	Ruta	Descripción
-GET	`/api/games`	Obtiene todos los videojuegos del catálogo.
-GET	`/api/games/:id`	Obtiene el detalle de un videojuego por ID.
-POST	`/api/games`	Registra un nuevo videojuego en el catálogo.
-PUT	`/api/games/:id`	Actualiza la información o precio de un videojuego.
-DELETE	`/api/games/:id`	Elimina un videojuego del catálogo.
-Compras / Transacciones
-Método	Ruta	Descripción
-POST	`/api/checkout`	Procesa la compra de una lista de videojuegos.
----
-🛠️ Próximas Mejoras
-[ ] Implementar autenticación y autorización mediante JWT.
-[ ] Integrar pasarela de pago (MercadoPago / Stripe).
-[ ] Añadir sistema de categorías y filtros avanzados.
----
 📄 Licencia
 Proyecto bajo la licencia MIT.
