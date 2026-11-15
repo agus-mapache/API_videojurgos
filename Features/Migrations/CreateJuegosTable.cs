@@ -13,6 +13,7 @@ public class CreateJuegosTable : Migration
             .WithColumn("precio_base").AsDecimal(8, 2).NotNullable()
             .WithColumn("descuento_porcentaje").AsInt32().Nullable().WithDefaultValue(0)
             .WithColumn("fecha_lanzamiento").AsDate().Nullable()
+            .WithColumn("trailer_url").AsString(500).Nullable()
             .WithColumn("id_desarrollador").AsInt32().Nullable()
             .WithColumn("id_editor").AsInt32().Nullable();
 

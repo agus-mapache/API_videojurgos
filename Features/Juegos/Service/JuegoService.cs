@@ -51,7 +51,9 @@ public class JuegoService(IJuegoRepository repository /*, IEmpresaRepository emp
             DescuentoPorcentaje = dto.DescuentoPorcentaje,
             FechaLanzamiento = dto.FechaLanzamiento,
             IdDesarrollador = dto.IdDesarrollador,
-            IdEditor = dto.IdEditor
+            IdEditor = dto.IdEditor,
+            ImagenUrl = dto.ImagenUrl,
+            TrailerUrl = dto.TrailerUrl
         };
 
         var idGenerado = await repository.CreateAsync(nuevoJuego);
@@ -60,7 +62,8 @@ public class JuegoService(IJuegoRepository repository /*, IEmpresaRepository emp
             idGenerado, nuevoJuego.Titulo, nuevoJuego.Slug, 
             nuevoJuego.Descripcion, nuevoJuego.PrecioBase, 
             nuevoJuego.DescuentoPorcentaje, nuevoJuego.FechaLanzamiento, 
-            nuevoJuego.IdDesarrollador, nuevoJuego.IdEditor
+            nuevoJuego.IdDesarrollador, nuevoJuego.IdEditor,
+            nuevoJuego.ImagenUrl, nuevoJuego.TrailerUrl
         );
     }
 
@@ -87,6 +90,8 @@ public class JuegoService(IJuegoRepository repository /*, IEmpresaRepository emp
         juegoExistente.FechaLanzamiento = dto.FechaLanzamiento;
         juegoExistente.IdDesarrollador = dto.IdDesarrollador;
         juegoExistente.IdEditor = dto.IdEditor;
+        juegoExistente.ImagenUrl = dto.ImagenUrl;
+        juegoExistente.TrailerUrl = dto.TrailerUrl;
 
         return await repository.UpdateAsync(juegoExistente);
     }
@@ -100,6 +105,6 @@ public class JuegoService(IJuegoRepository repository /*, IEmpresaRepository emp
         new(
             j.IdJuego, j.Titulo, j.Slug, j.Descripcion, 
             j.PrecioBase, j.DescuentoPorcentaje, j.FechaLanzamiento, 
-            j.IdDesarrollador, j.IdEditor
+            j.IdDesarrollador, j.IdEditor, j.ImagenUrl, j.TrailerUrl
         );
 }

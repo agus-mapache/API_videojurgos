@@ -29,12 +29,12 @@ public class JuegoRepository(IDbConnection connection) : IJuegoRepository
             INSERT INTO juegos (
                 titulo, slug, descripcion, precio_base, 
                 descuento_porcentaje, fecha_lanzamiento, 
-                id_desarrollador, id_editor
+                id_desarrollador, id_editor, imagen_url, trailer_url
             ) 
             VALUES (
                 @Titulo, @Slug, @Descripcion, @PrecioBase, 
                 @DescuentoPorcentaje, @FechaLanzamiento, 
-                @IdDesarrollador, @IdEditor
+                @IdDesarrollador, @IdEditor, @ImagenUrl, @TrailerUrl
             );
             SELECT LAST_INSERT_ID();
             """;
@@ -53,7 +53,9 @@ public class JuegoRepository(IDbConnection connection) : IJuegoRepository
                 descuento_porcentaje = @DescuentoPorcentaje, 
                 fecha_lanzamiento = @FechaLanzamiento, 
                 id_desarrollador = @IdDesarrollador, 
-                id_editor = @IdEditor
+                id_editor = @IdEditor,
+                imagen_url = @ImagenUrl,
+                trailer_url = @TrailerUrl
             WHERE id_juego = @IdJuego
             """;
             

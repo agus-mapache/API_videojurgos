@@ -9,6 +9,8 @@ public class Juego
     public decimal PrecioBase { get; set; }
     public int DescuentoPorcentaje { get; set; }
     public DateTime? FechaLanzamiento { get; set; }
+    public string? ImagenUrl { get; set; }
+    public string? TrailerUrl { get; set; }
     
     // Relaciones (pueden ser nulas por el ON DELETE SET NULL)
     public int? IdDesarrollador { get; set; }

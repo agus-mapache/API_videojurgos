@@ -33,6 +33,7 @@ CREATE TABLE juegos (
     fecha_lanzamiento DATE,
     id_desarrollador INT,
     id_editor INT,
+    imagen_url VARCHAR(500) NULL,
     FOREIGN KEY (id_desarrollador) REFERENCES empresas(id_empresa) ON DELETE SET NULL,
     FOREIGN KEY (id_editor) REFERENCES empresas(id_empresa) ON DELETE SET NULL
 );

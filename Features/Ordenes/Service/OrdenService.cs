@@ -1,9 +1,11 @@
+using APIVideoJuegos.Features.Biblioteca;
+using APIVideoJuegos.Features.Biblioteca.Repository;
 using APIVideoJuegos.Features.Ordenes.DTOs;
 using APIVideoJuegos.Features.Ordenes.Repository;
 
 namespace APIVideoJuegos.Features.Ordenes.Service;
 
-public class OrdenService(IOrdenRepository repository) : IOrdenService
+public class OrdenService(IOrdenRepository repository, IBibliotecaRepository bibliotecaRepository) : IOrdenService
 {
     public async Task<IEnumerable<OrdenResponseDto>> GetAllAsync()
     {
@@ -43,6 +45,20 @@ public class OrdenService(IOrdenRepository repository) : IOrdenService
         }).ToList();
 
         var idGenerado = await repository.CreateAsync(nuevaOrden, listaDetalles);
+
+        foreach (var detalle in listaDetalles)
+        {
+            var existente = await bibliotecaRepository.GetAsync(dto.IdUsuario, detalle.IdJuego);
+            if (existente is null)
+            {
+                await bibliotecaRepository.AddAsync(new BibliotecaItem
+                {
+                    IdUsuario = dto.IdUsuario,
+                    IdJuego = detalle.IdJuego,
+                    HorasJugadas = 0.0m
+                });
+            }
+        }
 
         // Retornamos la respuesta construida
         return new OrdenResponseDto(
